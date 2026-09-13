@@ -1,0 +1,85 @@
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$green-palette,
+    ),
+    typography: Roboto,
+    density: -1,
+  ));
+}
+
+body {
+  color-scheme: light;
+
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  margin: 0;
+  height: 100%;
+}
+
+/* ---- Paleta cálida azul/verde: variables globales ---- */
+:root {
+  --app-primary: #1f6f8b;
+  --app-primary-soft: #e7f2f6;
+  --app-primary-dark: #17505f;
+
+  --app-green: #2f9e6e;
+  --app-green-soft: #e6f4ec;
+  --app-green-dark: #1f6b49;
+
+  --app-bg: #f4f7f5;
+  --app-surface: #ffffff;
+  --app-border: #e3ebe7;
+
+  --app-text: #2d3b35;
+  --app-text-muted: #6b7b74;
+}
+
+// Scrollbar sutil acorde a la paleta
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c7d6ce;
+  border-radius: 6px;
+
+  &:hover {
+    background: #a9c2b5;
+  }
+}
+
+.mat-mdc-button,
+.mat-mdc-flat-button,
+.mat-mdc-raised-button {
+  border-radius: 10px !important;
+}
+
+.mat-mdc-card {
+  border-radius: 16px !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-notched-outline {
+  border-color: var(--app-primary) !important;
+}
+
+.mat-snack-bar-container {
+  border-radius: 12px !important;
+}

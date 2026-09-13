@@ -1,0 +1,126 @@
+<div class="page-container">
+
+  <div class="content-wrapper">
+
+    <mat-card class="form-card">
+
+      <mat-card-header>
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>{{ esModoEdicion ? 'edit' : 'storefront' }}</mat-icon>
+        </div>
+
+        <mat-card-title>{{ esModoEdicion ? 'Editar editorial' : 'Añadir nueva editorial' }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ esModoEdicion ? 'Modifica el nombre de la editorial' : 'Completa los datos de la editorial que quieres añadir' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <form [formGroup]="editorialForm" (ngSubmit)="guardar()">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre</mat-label>
+
+            <input
+              matInput
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej. Panini, Topps...">
+
+            <mat-icon matSuffix>storefront</mat-icon>
+
+            <mat-error *ngIf="editorialForm.get('nombre')?.hasError('required')">
+              El nombre es obligatorio
+            </mat-error>
+
+            <mat-error *ngIf="editorialForm.get('nombre')?.hasError('maxlength')">
+              El nombre no puede superar los 100 caracteres
+            </mat-error>
+          </mat-form-field>
+
+          <div class="mensaje" [class.error]="!!error">
+            {{ mensaje }}{{ error }}
+          </div>
+
+          <mat-card-actions align="end">
+
+            <button
+              mat-button
+              type="button"
+              (click)="cancelar()">
+
+              {{ esModoEdicion ? 'Cancelar' : 'Limpiar' }}
+
+            </button>
+
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="cargando">
+
+              <mat-icon>{{ esModoEdicion ? 'save' : 'add' }}</mat-icon>
+              {{ cargando ? 'Guardando...' : (esModoEdicion ? 'Actualizar' : 'Guardar editorial') }}
+
+            </button>
+
+          </mat-card-actions>
+
+        </form>
+
+      </mat-card-content>
+
+    </mat-card>
+
+
+    <mat-card class="list-card">
+
+      <mat-card-header>
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>list</mat-icon>
+        </div>
+
+        <mat-card-title>Editoriales registradas</mat-card-title>
+        <mat-card-subtitle>
+          Editoriales existentes en la base de datos
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <mat-list>
+
+          <mat-list-item *ngFor="let editorial of editoriales">
+            <mat-icon matListItemIcon>storefront</mat-icon>
+            <span matListItemTitle>{{ editorial.nombre }}</span>
+            <button
+              mat-icon-button
+              matListItemMeta
+              (click)="editar(editorial)"
+              [disabled]="esModoEdicion">
+
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matListItemMeta
+              (click)="eliminar(editorial)">
+
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+          </mat-list-item>
+
+          <mat-list-item *ngIf="editoriales.length === 0">
+            <span matListItemTitle>No hay editoriales registradas.</span>
+          </mat-list-item>
+
+        </mat-list>
+
+      </mat-card-content>
+
+    </mat-card>
+
+  </div>
+
+</div>

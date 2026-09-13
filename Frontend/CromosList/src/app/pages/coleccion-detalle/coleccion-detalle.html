@@ -1,0 +1,114 @@
+<div class="page-container">
+
+  <div class="cargando" *ngIf="cargando">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando colección...</p>
+  </div>
+
+  <div class="error" *ngIf="error && !cargando">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+    <a mat-stroked-button color="primary" routerLink="/albumes">
+      <mat-icon>arrow_back</mat-icon>
+      Volver a álbumes
+    </a>
+  </div>
+
+  <div class="detalle" *ngIf="album && !cargando">
+
+    <header class="detalle-header">
+      <a mat-icon-button routerLink="/albumes" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <div>
+        <h1>{{ album.nombre }}</h1>
+        <p class="subtitle">{{ album.temporada }} · {{ album.equipos.length }} equipo{{ album.equipos.length !== 1 ? 's' : '' }}</p>
+      </div>
+    </header>
+
+    <mat-accordion multi>
+
+      <mat-expansion-panel *ngFor="let equipo of album.equipos; trackBy: trackEquipo">
+
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>groups</mat-icon>
+            {{ equipo.nombre }}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ cromosDeEquipo(equipo).length }} cromo{{ cromosDeEquipo(equipo).length !== 1 ? 's' : '' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="cromos-grid" *ngIf="cromosDeEquipo(equipo).length > 0">
+          <mat-card class="cromo-card" *ngFor="let cromo of cromosDeEquipo(equipo)">
+            <mat-card-content>
+              <span class="cromo-numero">{{ cromo.numero }}</span>
+              <p class="cromo-jugador">{{ cromo.jugador.nombre }}</p>
+              <p class="cromo-tipo">{{ cromo.tipoCromo.nombre }}</p>
+              <p class="cromo-edicion" *ngIf="mostrarEdicion(cromo)">{{ cromo.edicion.nombre }}</p>
+            </mat-card-content>
+            <button mat-icon-button class="cromo-editar-btn" (click)="editarCromo(cromo)" aria-label="Editar cromo">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </mat-card>
+        </div>
+
+        <div class="cromos-grid" *ngIf="cromosDeEquipo(equipo).length === 0">
+          <mat-card class="cromo-card placeholder" *ngFor="let p of placeholders">
+            <mat-card-content>
+              <span class="cromo-numero">1</span>
+              <p class="cromo-jugador">Sin cromo</p>
+              <p class="cromo-tipo">—</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+    <div class="sin-equipos" *ngIf="album.equipos.length === 0">
+      <mat-icon>info</mat-icon>
+      <p>Este álbum no tiene equipos definidos todavía.</p>
+    </div>
+
+    <ng-container *ngIf="especiales.length > 0">
+
+      <mat-accordion multi class="especiales-accordion">
+
+        <mat-expansion-panel class="especiales-panel" *ngFor="let grupo of especiales; trackBy: trackTipo">
+
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>star</mat-icon>
+              {{ grupo.tipo }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ grupo.cromos.length }} cromo{{ grupo.cromos.length !== 1 ? 's' : '' }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="cromos-grid">
+            <mat-card class="cromo-card" *ngFor="let cromo of grupo.cromos">
+            <mat-card-content>
+              <span class="cromo-numero">{{ cromo.numero }}</span>
+              <p class="cromo-jugador">{{ cromo.jugador.nombre }}</p>
+              <p class="cromo-equipo">{{ cromo.equipo.nombre }}</p>
+              <p class="cromo-edicion" *ngIf="mostrarEdicion(cromo)">{{ cromo.edicion.nombre }}</p>
+            </mat-card-content>
+            <button mat-icon-button class="cromo-editar-btn" (click)="editarCromo(cromo)" aria-label="Editar cromo">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </mat-card>
+          </div>
+
+        </mat-expansion-panel>
+
+      </mat-accordion>
+
+    </ng-container>
+
+  </div>
+
+</div>

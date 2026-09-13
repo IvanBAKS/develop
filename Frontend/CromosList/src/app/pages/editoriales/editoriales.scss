@@ -1,0 +1,108 @@
+.page-container {
+  min-height: calc(100vh - 64px);
+  padding: 40px 24px;
+  background: var(--app-bg);
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+mat-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+}
+
+mat-card-header {
+  padding: 24px 24px 16px;
+}
+
+mat-card-title {
+  font-size: 20px !important;
+  font-weight: 600;
+}
+
+mat-card-subtitle {
+  margin-top: 6px;
+}
+
+.header-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
+}
+
+.header-icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+mat-card-content {
+  padding: 24px !important;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.mensaje {
+  min-height: 20px;
+  color: var(--app-green);
+  font-weight: 500;
+  text-align: center;
+}
+
+.mensaje.error {
+  color: #c62828;
+}
+
+mat-card-actions {
+  padding: 0;
+  gap: 8px;
+}
+
+mat-card-actions button {
+  min-height: 42px;
+}
+
+mat-card-actions mat-icon {
+  margin-right: 6px;
+}
+
+mat-list mat-list-item {
+  margin-bottom: 4px;
+}
+
+@media (max-width: 650px) {
+
+  .page-container {
+    padding: 20px 12px;
+  }
+
+  mat-card-title {
+    font-size: 18px !important;
+  }
+}

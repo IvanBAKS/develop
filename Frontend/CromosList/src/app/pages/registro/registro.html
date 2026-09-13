@@ -1,0 +1,89 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="auth-icon">person_add</mat-icon>
+        Crear cuenta
+      </mat-card-title>
+      <mat-card-subtitle>Regístrate para empezar a usar CromosList</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre</mat-label>
+          <input
+            matInput
+            [(ngModel)]="nombre"
+            name="nombre"
+            required
+            #nameField="ngModel" />
+          @if (nameField.invalid && nameField.touched) {
+            <mat-error>El nombre es obligatorio.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            required
+            email
+            #emailField="ngModel" />
+          @if (emailField.invalid && emailField.touched) {
+            <mat-error>Introduce un email válido.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="contrasena"
+            name="contrasena"
+            required
+            minlength="6"
+            #passField="ngModel" />
+          @if (passField.invalid && passField.touched) {
+            <mat-error>Mínimo 6 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirmar contraseña</mat-label>
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="confirmar"
+            name="confirmar"
+            required
+            #confirmField="ngModel" />
+          @if (confirmField.touched && confirmar && !passwordsMatch) {
+            <mat-error>Las contraseñas no coinciden.</mat-error>
+          }
+        </mat-form-field>
+
+        @if (error) {
+          <div class="error-message">{{ error }}</div>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="full-width submit-btn"
+          [disabled]="registerForm.invalid || !passwordsMatch || loading">
+          {{ loading ? 'Creando cuenta...' : 'Registrarse' }}
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <a mat-button routerLink="/login">¿Ya tienes cuenta? Inicia sesión</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>98f10815-cee3-4da3-9e9f-629836630d08</UserSecretsId>
+		<AngularProjectPath>$(MSBuildProjectDirectory)\..\..\Frontend\CromosList</AngularProjectPath>		<AngularDistPath>$(AngularProjectPath)\dist\CromosList\browser</AngularDistPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Controllers\" />
+		<Folder Include="wwwroot\" />
+	</ItemGroup>
+
+	<Target Name="BuildAngular" BeforeTargets="Build"
+          Condition="Exists('$(AngularProjectPath)\package.json') And '$(SkipAngularBuild)' != 'true'">
+		<Exec
+		  WorkingDirectory="$(AngularProjectPath)"
+		  Command="npm install"
+		  ContinueOnError="WarnAndContinue" />
+
+		<Exec
+		  WorkingDirectory="$(AngularProjectPath)"
+		  Command="npm run build"
+		  ContinueOnError="WarnAndContinue" />
+
+		<ItemGroup>
+			<AngularFiles Include="$(AngularDistPath)\**\*" />
+		</ItemGroup>
+
+		<Copy
+		  SourceFiles="@(AngularFiles)"
+		  DestinationFiles="@(AngularFiles->'$(MSBuildProjectDirectory)\wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
+
+</Project>

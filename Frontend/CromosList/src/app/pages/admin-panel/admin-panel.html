@@ -1,0 +1,147 @@
+<div class="panel">
+
+  <header class="panel-header">
+    <div>
+      <h1>Panel de administración</h1>
+      <p class="subtitle">Resumen general de la colección CromosList</p>
+    </div>
+    <button mat-stroked-button color="primary" (click)="cargarResumen()" [disabled]="cargando">
+      <mat-icon>refresh</mat-icon>
+      Actualizar
+    </button>
+  </header>
+
+  <div class="card-grid" *ngIf="resumen">
+
+    <div class="highlight">
+      <mat-card class="hero">
+        <div class="hero-body">
+          <mat-icon class="hero-icon">style</mat-icon>
+          <div>
+            <p class="hero-title">{{ resumen.cromos }}</p>
+            <p class="hero-label">Cromos en total</p>
+          </div>
+        </div>
+        <mat-card-content>
+          <p>
+            <mat-icon>style</mat-icon>
+            {{ resumen.cromosPorUsuario }} cromos por usuario
+          </p>
+          <p>
+            <mat-icon>album</mat-icon>
+            {{ resumen.albumes }} álbumes disponibles
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="grid-item" *ngFor="let tarjeta of tarjetas">
+
+      <a
+        mat-card
+        class="stat-card"
+        *ngIf="tarjeta.ruta"
+        [routerLink]="tarjeta.ruta">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>{{ tarjeta.icono }}</mat-icon>
+          </div>
+          <div class="stat-body">
+            <p class="stat-value">{{ valor(tarjeta.clave) }}</p>
+            <p class="stat-title">{{ tarjeta.titulo }}</p>
+            <p class="stat-desc">{{ tarjeta.descripcion }}</p>
+          </div>
+        </mat-card-content>
+      </a>
+
+      <mat-card class="stat-card" *ngIf="!tarjeta.ruta">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>{{ tarjeta.icono }}</mat-icon>
+          </div>
+          <div class="stat-body">
+            <p class="stat-value">{{ valor(tarjeta.clave) }}</p>
+            <p class="stat-title">{{ tarjeta.titulo }}</p>
+            <p class="stat-desc">{{ tarjeta.descripcion }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+  </div>
+
+  <section class="busqueda-section" *ngIf="resumen">
+
+    <mat-card class="busqueda-card">
+      <mat-card-header>
+        <div mat-card-avatar class="busqueda-icon">
+          <mat-icon>search</mat-icon>
+        </div>
+        <mat-card-title>Buscar cromos</mat-card-title>
+        <mat-card-subtitle>Busca por nombre de jugador o de equipo</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Jugador o equipo</mat-label>
+          <input
+            matInput
+            type="text"
+            [formControl]="busqueda"
+            placeholder="Ej. Lamine Yamal o FC Barcelona">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <div class="busqueda-actions" *ngIf="busqueda.value">
+          <button mat-button type="button" (click)="limpiar()">
+            <mat-icon>close</mat-icon>
+            Limpiar
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="resultados" *ngIf="buscando">
+      <mat-spinner diameter="32"></mat-spinner>
+      <p>Buscando...</p>
+    </div>
+
+    <div class="resultados vacio" *ngIf="!buscando && sinResultados">
+      <mat-icon>search_off</mat-icon>
+      <p>No hay cromos para «{{ buscado }}».</p>
+    </div>
+
+    <div class="resultados" *ngIf="!buscando && buscado && !sinResultados">
+      <p class="resultado-titulo">{{ resultados.length }} cromo(s) para «{{ buscado }}»</p>
+    </div>
+
+    <mat-card class="result-card" *ngFor="let cromo of resultados">
+      <mat-card-content>
+        <div class="result-icon">
+          <mat-icon>style</mat-icon>
+        </div>
+        <div class="result-body">
+          <p class="result-numero">N.º {{ cromo.numero }}</p>
+          <p class="result-jugador">{{ cromo.jugador?.nombreCompleto || cromo.jugador?.nombre || '—' }}</p>
+          <p class="result-meta">
+            <mat-icon>groups</mat-icon> {{ cromo.equipo?.nombre || '—' }}
+            <mat-icon class="sep">album</mat-icon> {{ cromo.album?.nombre || '—' }}
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </section>
+
+  <div class="cargando" *ngIf="cargando && !resumen">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando datos del panel...</p>
+  </div>
+
+  <div class="error" *ngIf="error && !cargando">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+</div>

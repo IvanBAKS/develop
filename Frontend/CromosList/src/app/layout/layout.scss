@@ -1,0 +1,105 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+mat-sidenav {
+  width: 250px;
+  background: var(--app-surface);
+  border-right: 1px solid var(--app-border);
+}
+
+.logo {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--app-primary-dark);
+  letter-spacing: 0.2px;
+}
+
+.logo mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  color: var(--app-green);
+}
+
+mat-nav-list {
+  padding-top: 6px;
+}
+
+.nav-section {
+  margin: 20px 22px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--app-text-muted);
+}
+
+mat-nav-list a {
+  margin: 3px 10px;
+  border-radius: 10px;
+  height: 46px;
+}
+
+mat-nav-list a.active {
+  background: var(--app-primary-soft);
+  color: var(--app-primary-dark);
+}
+
+mat-nav-list a.active mat-icon {
+  color: var(--app-primary);
+}
+
+mat-nav-list a:hover {
+  background: var(--app-green-soft);
+}
+
+mat-nav-list mat-icon {
+  color: var(--app-text-muted);
+}
+
+mat-nav-list a.active mat-icon {
+  color: var(--app-primary);
+}
+
+mat-toolbar {
+  background: var(--app-surface);
+  color: var(--app-primary-dark);
+  border-bottom: 1px solid var(--app-border);
+}
+
+mat-toolbar mat-icon {
+  color: var(--app-primary);
+}
+
+.toolbar-title {
+  margin-left: 10px;
+  font-weight: 700;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.admin-badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--app-green);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.content {
+  padding: 24px;
+  min-height: calc(100vh - 64px);
+  background: var(--app-bg);
+}

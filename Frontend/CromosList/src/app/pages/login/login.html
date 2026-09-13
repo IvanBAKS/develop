@@ -1,0 +1,61 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="auth-icon">lock</mat-icon>
+        Iniciar sesión
+      </mat-card-title>
+      <mat-card-subtitle>Accede a tu cuenta de CromosList</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            required
+            email
+            #emailField="ngModel" />
+          @if (emailField.invalid && emailField.touched) {
+            <mat-error>Introduce un email válido.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="contrasena"
+            name="contrasena"
+            required
+            #passField="ngModel" />
+          @if (passField.invalid && passField.touched) {
+            <mat-error>La contraseña es obligatoria.</mat-error>
+          }
+        </mat-form-field>
+
+        @if (error) {
+          <div class="error-message">{{ error }}</div>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="full-width submit-btn"
+          [disabled]="loginForm.invalid || loading">
+          {{ loading ? 'Entrando...' : 'Iniciar sesión' }}
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <a mat-button routerLink="/registro">¿No tienes cuenta? Regístrate</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

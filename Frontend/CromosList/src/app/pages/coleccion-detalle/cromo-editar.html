@@ -1,0 +1,114 @@
+<h2 mat-dialog-title>Editar cromo</h2>
+
+<mat-dialog-content>
+
+  <div class="error" *ngIf="error">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <form [formGroup]="cromoForm" class="editar-form">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Número</mat-label>
+      <input matInput formControlName="numero" />
+      <mat-error *ngIf="cromoForm.get('numero')?.hasError('required')">
+        El número es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Equipo</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="equipo"
+        [matAutocomplete]="autoEquipo"
+        (input)="onEquipoInput($any($event.target).value)"
+        placeholder="Buscar equipo..."
+      />
+      <mat-autocomplete #autoEquipo="matAutocomplete" (optionSelected)="onEquipoSelected($event.option.value)">
+        <mat-option *ngFor="let equipo of filteredEquipos$ | async" [value]="equipo">
+          {{ equipo.nombre }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="cromoForm.get('equipo')?.hasError('required')">
+        El equipo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Jugador</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="jugador"
+        [matAutocomplete]="autoJugador"
+        (input)="onJugadorInput($any($event.target).value)"
+        placeholder="Buscar jugador..."
+      />
+      <mat-autocomplete #autoJugador="matAutocomplete" (optionSelected)="onJugadorSelected($event.option.value)">
+        <mat-option *ngFor="let jugador of filteredJugadores$ | async" [value]="jugador">
+          {{ jugador.nombreCompleto || jugador.nombre }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="cromoForm.get('jugador')?.hasError('required')">
+        El jugador es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Edición</mat-label>
+      <mat-select formControlName="edicionId">
+        <mat-option *ngFor="let edicion of ediciones" [value]="edicion.id">
+          {{ edicion.nombre }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="cromoForm.get('edicionId')?.hasError('required')">
+        La edición es obligatoria.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Tipo de cromo</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="tipoCromo"
+        [matAutocomplete]="autoTipo"
+        (input)="onTipoCromoInput($any($event.target).value)"
+        placeholder="Buscar tipo..."
+      />
+      <mat-autocomplete #autoTipo="matAutocomplete" (optionSelected)="onTipoCromoSelected($event.option.value)">
+        <mat-option *ngFor="let tipo of filteredTiposCromo$ | async" [value]="tipo">
+          {{ tipo.nombre }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="cromoForm.get('tipoCromo')?.hasError('required')">
+        El tipo de cromo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Álbum</mat-label>
+      <mat-select formControlName="albumId">
+        <mat-option *ngFor="let album of albumes" [value]="album.id">
+          {{ album.nombre }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="cromoForm.get('albumId')?.hasError('required')">
+        El álbum es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancelar()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="guardar()" [disabled]="cargando">
+    <mat-spinner *ngIf="cargando" diameter="18" style="display:inline-block; margin-right:8px"></mat-spinner>
+    Guardar
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,119 @@
+<div class="page-container">
+
+  <div class="content-wrapper">
+
+    <mat-card class="form-card">
+
+      <mat-card-header>
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>{{ esModoEdicion ? 'edit' : 'groups' }}</mat-icon>
+        </div>
+
+        <mat-card-title>{{ esModoEdicion ? 'Editar equipo' : 'Añadir nuevo equipo' }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ esModoEdicion ? 'Modifica el nombre del equipo' : 'Completa los datos del equipo que quieres añadir' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <form [formGroup]="equipoForm" (ngSubmit)="guardar()">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre</mat-label>
+
+            <input
+              matInput
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej. Real Madrid">
+
+            <mat-icon matSuffix>badge</mat-icon>
+
+            <mat-error *ngIf="equipoForm.get('nombre')?.hasError('required')">
+              El nombre es obligatorio
+            </mat-error>
+
+            <mat-error *ngIf="equipoForm.get('nombre')?.hasError('maxlength')">
+              El nombre no puede superar los 100 caracteres
+            </mat-error>
+          </mat-form-field>
+
+          <div class="mensaje" [class.error]="!!error">
+            {{ mensaje }}{{ error }}
+          </div>
+
+          <mat-card-actions align="end">
+
+            <button
+              mat-button
+              type="button"
+              (click)="cancelar()">
+
+              {{ esModoEdicion ? 'Cancelar' : 'Limpiar' }}
+
+            </button>
+
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="cargando">
+
+              <mat-icon>{{ esModoEdicion ? 'save' : 'add' }}</mat-icon>
+              {{ cargando ? 'Guardando...' : (esModoEdicion ? 'Actualizar' : 'Guardar equipo') }}
+
+            </button>
+
+          </mat-card-actions>
+
+        </form>
+
+      </mat-card-content>
+
+    </mat-card>
+
+
+    <mat-card class="list-card">
+
+      <mat-card-header>
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>list</mat-icon>
+        </div>
+
+        <mat-card-title>Equipos registrados</mat-card-title>
+        <mat-card-subtitle>
+          Equipos existentes en la base de datos
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <mat-list>
+
+          <mat-list-item *ngFor="let equipo of equipos">
+            <mat-icon matListItemIcon>groups</mat-icon>
+            <span matListItemTitle>{{ equipo.nombre }}</span>
+            <button
+              mat-icon-button
+              matListItemMeta
+              (click)="editar(equipo)"
+              [disabled]="esModoEdicion">
+
+              <mat-icon>edit</mat-icon>
+            </button>
+          </mat-list-item>
+
+          <mat-list-item *ngIf="equipos.length === 0">
+            <span matListItemTitle>No hay equipos registrados.</span>
+          </mat-list-item>
+
+        </mat-list>
+
+      </mat-card-content>
+
+    </mat-card>
+
+  </div>
+
+</div>

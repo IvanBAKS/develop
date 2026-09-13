@@ -1,0 +1,316 @@
+<div class="page-container">
+
+  <div class="content-wrapper">
+
+    <mat-card class="form-card">
+
+      <mat-card-header>
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>{{ esModoEdicion ? 'edit' : 'album' }}</mat-icon>
+        </div>
+
+        <mat-card-title>{{ esModoEdicion ? 'Editar álbum' : 'Añadir nuevo álbum' }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ esModoEdicion ? 'Modifica los datos del álbum' : 'Completa los datos del álbum que quieres añadir' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <form [formGroup]="albumForm" (ngSubmit)="guardar()">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Editorial</mat-label>
+
+            <mat-select formControlName="editorialId">
+              <mat-option *ngFor="let editorial of editoriales" [value]="editorial.id">
+                {{ editorial.nombre }}
+              </mat-option>
+            </mat-select>
+
+            <mat-icon matSuffix>business</mat-icon>
+
+            <mat-error *ngIf="albumForm.get('editorialId')?.hasError('required')">
+              La editorial es obligatoria
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre</mat-label>
+
+            <input
+              matInput
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej. La Liga 2025">
+
+            <mat-icon matSuffix>badge</mat-icon>
+
+            <mat-error *ngIf="albumForm.get('nombre')?.hasError('required')">
+              El nombre es obligatorio
+            </mat-error>
+
+            <mat-error *ngIf="albumForm.get('nombre')?.hasError('maxlength')">
+              El nombre no puede superar los 100 caracteres
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Temporada</mat-label>
+
+            <input
+              matInput
+              type="text"
+              formControlName="temporada"
+              placeholder="Ej. 2024/2025">
+
+            <mat-icon matSuffix>calendar_today</mat-icon>
+
+            <mat-error *ngIf="albumForm.get('temporada')?.hasError('required')">
+              La temporada es obligatoria
+            </mat-error>
+
+            <mat-error *ngIf="albumForm.get('temporada')?.hasError('maxlength')">
+              La temporada no puede superar los 50 caracteres
+            </mat-error>
+          </mat-form-field>
+
+          <div class="list-block">
+
+            <div class="list-block-title">
+              <mat-icon>groups</mat-icon>
+              <span>Equipos</span>
+              <button
+                mat-icon-button
+                type="button"
+                class="add-item-btn"
+                (click)="agregarEquipo()">
+
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
+            <div
+              *ngFor="let equipoForm of equiposForm.controls; let i = index"
+              class="item-row">
+              <span class="item-index">{{ i + 1 }}</span>
+
+              <mat-form-field appearance="outline" class="item-field">
+                <mat-select [formControl]="equipoControl(i)">
+                  <mat-option *ngFor="let equipo of equipos" [value]="equipo.id">
+                    {{ equipo.nombre }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="equipoControl(i).hasError('required') && equipoControl(i).touched">
+                  Selecciona un equipo
+                </mat-error>
+              </mat-form-field>
+
+              <div class="move-buttons">
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="moverEquipo(i, -1)"
+                  [disabled]="i === 0">
+
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="moverEquipo(i, 1)"
+                  [disabled]="i === equiposForm.length - 1">
+
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+              </div>
+
+              <button
+                mat-icon-button
+                type="button"
+                (click)="quitarEquipo(i)">
+
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+            <div *ngIf="equiposForm.length === 0" class="empty-note">
+              Aún no hay equipos añadidos.
+            </div>
+
+          </div>
+
+          <div class="list-block">
+
+            <div class="list-block-title">
+              <mat-icon>category</mat-icon>
+              <span>Cromos especiales</span>
+              <button
+                mat-icon-button
+                type="button"
+                class="add-item-btn"
+                (click)="agregarTipoCromo()">
+
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
+            <div
+              *ngFor="let tipoForm of tiposCromoForm.controls; let i = index"
+              class="item-row">
+              <span class="item-index">{{ i + 1 }}</span>
+
+              <mat-form-field appearance="outline" class="item-field">
+                <mat-select [formControl]="tipoCromoControl(i)">
+                  <mat-option *ngFor="let tipo of tiposCromo" [value]="tipo.id">
+                    {{ tipo.nombre }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="tipoCromoControl(i).hasError('required') && tipoCromoControl(i).touched">
+                  Selecciona un tipo de cromo
+                </mat-error>
+              </mat-form-field>
+
+              <div class="move-buttons">
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="moverTipoCromo(i, -1)"
+                  [disabled]="i === 0">
+
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="moverTipoCromo(i, 1)"
+                  [disabled]="i === tiposCromoForm.length - 1">
+
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+              </div>
+
+              <button
+                mat-icon-button
+                type="button"
+                (click)="quitarTipoCromo(i)">
+
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+            <div *ngIf="tiposCromoForm.length === 0" class="empty-note">
+              Aún no hay tipos de cromo añadidos.
+            </div>
+
+          </div>
+
+          <div class="mensaje" [class.error]="!!error">
+            {{ mensaje }}{{ error }}
+          </div>
+
+          <mat-card-actions align="end">
+
+            <button
+              mat-button
+              type="button"
+              (click)="cancelar()">
+
+              {{ esModoEdicion ? 'Cancelar' : 'Limpiar' }}
+
+            </button>
+
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="cargando">
+
+              <mat-icon>{{ esModoEdicion ? 'save' : 'add' }}</mat-icon>
+              {{ cargando ? 'Guardando...' : (esModoEdicion ? 'Actualizar' : 'Guardar álbum') }}
+
+            </button>
+
+          </mat-card-actions>
+
+        </form>
+
+      </mat-card-content>
+
+    </mat-card>
+
+
+    <mat-card class="list-card">
+
+      <mat-card-header>
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>list</mat-icon>
+        </div>
+
+        <mat-card-title>Álbumes registrados</mat-card-title>
+        <mat-card-subtitle>
+          Álbumes existentes en la base de datos
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <mat-list>
+
+          <mat-list-item *ngFor="let album of albumes">
+            <mat-icon matListItemIcon>album</mat-icon>
+            <span matListItemTitle>{{ album.nombre }}</span>
+            <span matListItemLine class="album-detail">
+              {{ album.editorial.nombre }} · {{ album.temporada }}
+            </span>
+            <span matListItemLine class="album-detail">
+              Equipos: {{ album.equipos.map(e => e.nombre).join(', ') }}
+            </span>
+            <span matListItemLine class="album-detail">
+              Cromos especiales: {{ album.tiposCromo.map(t => t.nombre).join(', ') }}
+            </span>
+            <span matListItemLine class="album-counter">
+              <mat-icon class="counter-icon">style</mat-icon>
+              {{ album.contadorCromos }} cromos
+            </span>
+            <a
+              mat-icon-button
+              matListItemMeta
+              [routerLink]="['/album', album.id]"
+              matTooltip="Ver todo"
+              matTooltipPosition="left">
+
+              <mat-icon>visibility</mat-icon>
+            </a>
+            <button
+              mat-icon-button
+              matListItemMeta
+              (click)="editar(album)"
+              [disabled]="esModoEdicion">
+
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matListItemMeta
+              (click)="eliminar(album)">
+
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+          </mat-list-item>
+
+          <mat-list-item *ngIf="albumes.length === 0">
+            <span matListItemTitle>No hay álbumes registrados.</span>
+          </mat-list-item>
+
+        </mat-list>
+
+      </mat-card-content>
+
+    </mat-card>
+
+  </div>
+
+</div>

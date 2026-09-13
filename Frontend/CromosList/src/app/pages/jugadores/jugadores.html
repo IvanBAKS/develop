@@ -1,0 +1,160 @@
+<div class="page-container">
+
+  <div class="content-wrapper">
+
+    <mat-card class="form-card">
+
+      <mat-card-header>
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>{{ esModoEdicion ? 'edit' : 'person' }}</mat-icon>
+        </div>
+
+        <mat-card-title>{{ esModoEdicion ? 'Editar jugador' : 'Añadir nuevo jugador' }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ esModoEdicion ? 'Modifica los datos del jugador' : 'Completa los datos del jugador que quieres añadir' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <form [formGroup]="jugadorForm" (ngSubmit)="guardar()">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre</mat-label>
+
+            <input
+              matInput
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej. Lamine Yamal">
+
+            <mat-icon matSuffix>badge</mat-icon>
+
+            <mat-error *ngIf="jugadorForm.get('nombre')?.hasError('required')">
+              El nombre es obligatorio
+            </mat-error>
+
+            <mat-error *ngIf="jugadorForm.get('nombre')?.hasError('maxlength')">
+              El nombre no puede superar los 100 caracteres
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre completo</mat-label>
+
+            <input
+              matInput
+              type="text"
+              formControlName="nombreCompleto"
+              placeholder="Ej. Lamine Yamal Nasraoui Ebana">
+
+            <mat-icon matSuffix>badge</mat-icon>
+
+            <mat-error *ngIf="jugadorForm.get('nombreCompleto')?.hasError('maxlength')">
+              El nombre no puede superar los 150 caracteres
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Equipos</mat-label>
+
+            <mat-select formControlName="equipos" multiple>
+              <mat-option *ngFor="let equipo of equipos" [value]="equipo.id">
+                {{ equipo.nombre }}
+              </mat-option>
+            </mat-select>
+
+            <mat-icon matSuffix>groups</mat-icon>
+
+            <mat-error *ngIf="jugadorForm.get('equipos')?.hasError('required')">
+              Debes seleccionar al menos un equipo
+            </mat-error>
+          </mat-form-field>
+
+          <div class="mensaje" [class.error]="!!error">
+            {{ mensaje }}{{ error }}
+          </div>
+
+          <mat-card-actions align="end">
+
+            <button
+              mat-button
+              type="button"
+              (click)="cancelar()">
+
+              {{ esModoEdicion ? 'Cancelar' : 'Limpiar' }}
+
+            </button>
+
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="cargando">
+
+              <mat-icon>{{ esModoEdicion ? 'save' : 'add' }}</mat-icon>
+              {{ cargando ? 'Guardando...' : (esModoEdicion ? 'Actualizar' : 'Guardar jugador') }}
+
+            </button>
+
+          </mat-card-actions>
+
+        </form>
+
+      </mat-card-content>
+
+    </mat-card>
+
+
+    <mat-card class="list-card">
+
+      <mat-card-header>
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>list</mat-icon>
+        </div>
+
+        <mat-card-title>Jugadores registrados</mat-card-title>
+        <mat-card-subtitle>
+          Jugadores existentes en la base de datos
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <mat-list>
+
+          <mat-list-item *ngFor="let jugador of jugadores">
+            <mat-icon matListItemIcon>person</mat-icon>
+            <span matListItemTitle>{{ jugador.nombre }}</span>
+            <span matListItemLine>{{ jugador.equipos.map(e => e.nombre).join(', ') }}</span>
+            <button
+              mat-icon-button
+              matListItemMeta
+              (click)="editar(jugador)"
+              [disabled]="esModoEdicion">
+
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matListItemMeta
+              (click)="eliminar(jugador)"
+              [disabled]="esModoEdicion">
+
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-list-item>
+
+          <mat-list-item *ngIf="jugadores.length === 0">
+            <span matListItemTitle>No hay jugadores registrados.</span>
+          </mat-list-item>
+
+        </mat-list>
+
+      </mat-card-content>
+
+    </mat-card>
+
+  </div>
+
+</div>

@@ -1,0 +1,14 @@
+.git
+.vs
+**/.git
+**/.vs
+
+**/bin
+**/obj
+**/node_modules
+Frontend/CromosList/dist
+publish
+artifacts
+
+*.user
+appsettings.Development.json

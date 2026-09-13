@@ -1,0 +1,143 @@
+<mat-sidenav-container class="sidenav-container">
+
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    opened>
+
+    <div class="logo">
+      <mat-icon>style</mat-icon>
+      <span>CromosList</span>
+    </div>
+
+    <mat-nav-list>
+
+      <a
+        mat-list-item
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Panel</span>
+
+      </a>
+
+      <h3 class="nav-section">Catálogo</h3>
+
+      <a
+        mat-list-item
+        routerLink="/cromos"
+        routerLinkActive="active">
+
+        <mat-icon matListItemIcon>style</mat-icon>
+        <span matListItemTitle>Cromos</span>
+
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/jugadores"
+        routerLinkActive="active">
+
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>Jugadores</span>
+
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/equipos"
+        routerLinkActive="active">
+
+        <mat-icon matListItemIcon>groups</mat-icon>
+        <span matListItemTitle>Equipos</span>
+
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/tipos-cromo"
+        routerLinkActive="active">
+
+        <mat-icon matListItemIcon>category</mat-icon>
+        <span matListItemTitle>Tipos de cromo</span>
+
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/albumes"
+        routerLinkActive="active">
+
+        <mat-icon matListItemIcon>album</mat-icon>
+        <span matListItemTitle>Álbumes</span>
+
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/editoriales"
+        routerLinkActive="active">
+
+        <mat-icon matListItemIcon>storefront</mat-icon>
+        <span matListItemTitle>Editoriales</span>
+
+      </a>
+
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+
+  <mat-sidenav-content>
+
+    <mat-toolbar>
+
+      <button
+        mat-icon-button
+        (click)="sidenav.toggle()">
+
+        <mat-icon>menu</mat-icon>
+
+      </button>
+
+      <span class="toolbar-title">
+        CromosList
+      </span>
+
+      <span class="toolbar-spacer"></span>
+
+      @if (auth.user(); as user) {
+        <button mat-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>account_circle</mat-icon>
+          {{ user.nombre }}
+          @if (user.esAdmin) {
+            <span class="admin-badge">Admin</span>
+          }
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item disabled>
+            <mat-icon>email</mat-icon>
+            <span>{{ user.email }}</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Cerrar sesión</span>
+          </button>
+        </mat-menu>
+      }
+
+    </mat-toolbar>
+
+
+    <main class="content">
+
+      <router-outlet></router-outlet>
+
+    </main>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

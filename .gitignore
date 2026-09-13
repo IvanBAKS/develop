@@ -1,0 +1,30 @@
+# .NET
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+.vs/
+artifacts/
+publish/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+*.tsbuildinfo
+coverage/
+
+# Entorno
+.env
+.env.local
+.env.*.local
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+# Angular compilado (lo genera el build)
+Backend/CromosList/wwwroot/
+

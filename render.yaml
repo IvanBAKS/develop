@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: cromoslist
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://+:${PORT}
+      - key: DISABLE_HTTPS_REDIRECT
+        value: "true"
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: JwtSettings__SecretKey
+        sync: false

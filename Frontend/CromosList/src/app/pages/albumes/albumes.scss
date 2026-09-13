@@ -1,0 +1,192 @@
+.page-container {
+  min-height: calc(100vh - 64px);
+  padding: 40px 24px;
+  background: #f5f7fa;
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+mat-card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+mat-card-header {
+  padding: 24px 24px 16px;
+}
+
+mat-card-title {
+  font-size: 20px !important;
+  font-weight: 600;
+}
+
+mat-card-subtitle {
+  margin-top: 6px;
+}
+
+.header-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+}
+
+.header-icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+mat-card-content {
+  padding: 24px !important;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.mensaje {
+  min-height: 20px;
+  color: #2e7d32;
+  font-weight: 500;
+  text-align: center;
+}
+
+.mensaje.error {
+  color: #c62828;
+}
+
+mat-card-actions {
+  padding: 0;
+  gap: 8px;
+}
+
+mat-card-actions button {
+  min-height: 42px;
+}
+
+mat-card-actions mat-icon {
+  margin-right: 6px;
+}
+
+mat-list mat-list-item {
+  margin-bottom: 4px;
+}
+
+.list-block {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fafafa;
+}
+
+.list-block-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.list-block-title mat-icon {
+  color: #1976d2;
+}
+
+.add-item-btn {
+  margin-left: auto;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.item-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
+  background: #1976d2;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.item-field {
+  flex: 1 1 auto;
+}
+
+.move-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.move-buttons mat-icon-button {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.empty-note {
+  color: #888;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.album-detail {
+  font-size: 13px;
+  color: #666;
+}
+
+.album-counter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.counter-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 650px) {
+
+  .page-container {
+    padding: 20px 12px;
+  }
+
+  mat-card-title {
+    font-size: 18px !important;
+  }
+}
