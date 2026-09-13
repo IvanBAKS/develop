@@ -42,10 +42,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var connectionString = NormalizeConnectionString(builder.Configuration.GetConnectionString("DefaultConnection"));
+
 builder.Services.AddDbContext<CromosListDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        npgsql => npgsql.EnableRetryOnFailure()));
+    options.UseNpgsql(connectionString, npgsql => npgsql.EnableRetryOnFailure()));
 
 var app = builder.Build();
 app.UseCors("Angular");
@@ -93,3 +93,23 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+static string NormalizeConnectionString(string? connectionString)
+{
+    if (string.IsNullOrWhiteSpace(connectionString) ||
+        !connectionString.StartsWith("postgres", StringComparison.OrdinalIgnoreCase))
+    {
+        return connectionString ?? string.Empty;
+    }
+
+    var uri = new UriBuilder(connectionString);
+
+    return $"Host={uri.Host};Port={uri.Port};Database={uri.Path.TrimStart('/')};" +
+           $"Username={EscapeValue(uri.UserName)};Password={EscapeValue(uri.Password)};SSL Mode=Require";
+}
+
+static string EscapeValue(string value)
+{
+    var needsQuoting = value.IndexOfAny(new[] { ';', '=', '"', '\'' }) >= 0;
+    return needsQuoting ? $"\"{value.Replace("\"", "\"\"")}\"" : value;
+}
