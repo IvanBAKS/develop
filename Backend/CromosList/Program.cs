@@ -42,7 +42,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = NormalizeConnectionString(builder.Configuration.GetConnectionString("DefaultConnection"));
+var connectionStringRaw = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = NormalizeConnectionString(connectionStringRaw);
+
+Console.WriteLine($"ConnectionString: host={new Npgsql.NpgsqlConnectionStringBuilder(connectionString).Host} " +
+                  $"(largo config={connectionStringRaw?.Length ?? 0})");
 
 builder.Services.AddDbContext<CromosListDbContext>(options =>
     options.UseNpgsql(connectionString, npgsql => npgsql.EnableRetryOnFailure()));
@@ -96,13 +100,18 @@ app.Run();
 
 static string NormalizeConnectionString(string? connectionString)
 {
-    if (string.IsNullOrWhiteSpace(connectionString) ||
-        !connectionString.StartsWith("postgres", StringComparison.OrdinalIgnoreCase))
-    {
-        return connectionString ?? string.Empty;
-    }
+    if (string.IsNullOrWhiteSpace(connectionString))
+        return string.Empty;
 
-    var uri = new UriBuilder(connectionString);
+    var trimmed = connectionString.Trim()
+        .Trim('"', '\'')
+        .TrimEnd(';')
+        .Trim();
+
+    if (!trimmed.StartsWith("postgres", StringComparison.OrdinalIgnoreCase))
+        return trimmed;
+
+    var uri = new UriBuilder(trimmed);
 
     return $"Host={uri.Host};Port={uri.Port};Database={uri.Path.TrimStart('/')};" +
            $"Username={EscapeValue(uri.UserName)};Password={EscapeValue(uri.Password)};SSL Mode=Require";

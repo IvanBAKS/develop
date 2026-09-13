@@ -80,4 +80,8 @@ export class AdminService {
       params: q ? { q } : {}
     });
   }
+
+  promoverAdmin(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/Usuarios/${id}/admin`, {});
+  }
 }

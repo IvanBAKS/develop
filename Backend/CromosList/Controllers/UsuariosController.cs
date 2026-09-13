@@ -48,7 +48,9 @@ public class UsuariosController : ControllerBase
     public async Task<IActionResult> PromoverAdmin(long id)
     {
         var miId = ObtenerMiId();
-        var yo = await _context.Usuarios.FindAsync(miId);
+        var yo = await _context.Usuarios
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == miId);
 
         if (yo is null || !yo.EsAdmin)
             return Forbid();
@@ -67,7 +69,9 @@ public class UsuariosController : ControllerBase
     public async Task<IActionResult> RevocarAdmin(long id)
     {
         var miId = ObtenerMiId();
-        var yo = await _context.Usuarios.FindAsync(miId);
+        var yo = await _context.Usuarios
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == miId);
 
         if (yo is null || !yo.EsAdmin)
             return Forbid();
@@ -90,6 +94,6 @@ public class UsuariosController : ControllerBase
         var sub = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                   ?? User.FindFirst("sub")?.Value;
 
-        return long.TryParse(sub, out var id) ? id : 0;
+        return long.TryParse(sub!, out var id) ? id : 0;
     }
 }
