@@ -4,7 +4,8 @@ import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MATERIAL_IMPORTS } from '../../shared/material.imports';
-import { AdminService, ResumenPanel, CromoBusqueda } from '../../services/admin.service';
+import { AdminService, ResumenPanel, CromoBusqueda, UsuarioPanel } from '../../services/admin.service';
+import { AuthService } from '../../services/auth.service';
 import { of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
@@ -25,6 +26,9 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   cargando = true;
   error = '';
   resumen: ResumenPanel | null = null;
+
+  usuarios: UsuarioPanel[] = [];
+  cargandoUsuarios = false;
 
   busqueda = new FormControl('');
   buscando = false;
@@ -49,11 +53,13 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
 
   constructor(
     private adminService: AdminService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.cargarResumen();
+    this.cargarUsuarios();
 
     this.subBusqueda = this.busqueda.valueChanges.pipe(
       debounceTime(350),
@@ -122,5 +128,45 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
       return 0;
     }
     return (this.resumen as unknown as Record<string, number>)[clave] ?? 0;
+  }
+
+  cargarUsuarios(): void {
+    this.cargandoUsuarios = true;
+    this.adminService.listarUsuarios().subscribe({
+      next: usuarios => {
+        this.usuarios = usuarios;
+        this.cargandoUsuarios = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.cargandoUsuarios = false;
+        this.error = 'No se ha podido cargar la lista de usuarios.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  esYo(id: number): boolean {
+    return this.authService.getMiId() === id;
+  }
+
+  promover(id: number): void {
+    this.adminService.promoverAdmin(id).subscribe({
+      next: () => this.cargarUsuarios(),
+      error: () => {
+        this.error = 'No se ha podido promover el usuario.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  revocar(id: number): void {
+    this.adminService.revocarAdmin(id).subscribe({
+      next: () => this.cargarUsuarios(),
+      error: () => {
+        this.error = 'No se ha podido revocar el rol de administrador.';
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

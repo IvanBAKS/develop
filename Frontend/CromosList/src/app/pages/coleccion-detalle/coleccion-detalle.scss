@@ -10,7 +10,7 @@
   align-items: center;
   gap: 16px;
   padding: 80px 24px;
-  color: var(--app-muted);
+  color: var(--app-text-muted);
 }
 
 .error {
@@ -50,7 +50,7 @@
 
   .subtitle {
     margin: 4px 0 0;
-    color: var(--app-muted);
+    color: var(--app-text-muted);
     font-size: 14px;
   }
 }
@@ -91,6 +91,64 @@ mat-panel-description {
   font-size: 13px;
 }
 
+.progreso-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--app-primary);
+  background: var(--app-primary-soft);
+}
+
+.progreso-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--app-text);
+
+  strong {
+    color: var(--app-primary);
+  }
+}
+
+.progreso-pct {
+  font-weight: 700;
+  color: var(--app-primary);
+}
+
+.progreso-faltan {
+  margin: 0;
+  font-size: 13px;
+  color: var(--app-text-muted);
+}
+
+.progreso-completo {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--app-green);
+}
+
+.no-suscrito-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px dashed var(--app-border);
+  background: var(--app-surface);
+
+  p {
+    margin: 0;
+    color: var(--app-text-muted);
+    font-size: 14px;
+  }
+}
+
 .cromos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -109,12 +167,71 @@ mat-panel-description {
     border-color: var(--app-primary);
   }
 
+  &.tenible {
+    cursor: pointer;
+  }
+
+  &.tengo {
+    border-color: var(--app-green);
+    background: var(--app-green-soft);
+  }
+
+  &.falta.tenible {
+    &:hover {
+      border-color: var(--app-green);
+    }
+  }
+
   mat-card-content {
     padding: 20px 12px !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
+  }
+}
+
+.cromo-tengo-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin: 0;
+  padding: 8px 12px;
+  border: none;
+  border-top: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) {
+    background: var(--app-primary-soft);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  &.tengo {
+    background: var(--app-green-soft);
+    color: var(--app-green-dark);
+    border-top-color: var(--app-green);
+
+    &:hover:not(:disabled) {
+      background: var(--app-green-soft);
+    }
+  }
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
   }
 }
 
@@ -125,7 +242,7 @@ mat-panel-description {
   width: 28px;
   height: 28px;
   line-height: 28px;
-  color: var(--app-muted);
+  color: var(--app-text-muted);
 
   mat-icon {
     font-size: 16px;
@@ -153,6 +270,11 @@ mat-panel-description {
   font-weight: 700;
 }
 
+.tengo .cromo-numero {
+  background: var(--app-green-soft);
+  color: var(--app-green-dark);
+}
+
 .cromo-jugador {
   margin: 0;
   font-weight: 600;
@@ -163,13 +285,13 @@ mat-panel-description {
 .cromo-tipo {
   margin: 0;
   font-size: 12px;
-  color: var(--app-muted);
+  color: var(--app-text-muted);
 }
 
 .cromo-equipo {
   margin: 0;
   font-size: 12px;
-  color: var(--app-muted);
+  color: var(--app-text-muted);
   font-style: italic;
 }
 
@@ -207,11 +329,11 @@ mat-panel-description {
 
   .cromo-numero {
     background: var(--app-border);
-    color: var(--app-muted);
+    color: var(--app-text-muted);
   }
 
   .cromo-jugador {
-    color: var(--app-muted);
+    color: var(--app-text-muted);
     font-style: italic;
   }
 }
@@ -222,7 +344,7 @@ mat-panel-description {
   align-items: center;
   gap: 12px;
   padding: 60px 24px;
-  color: var(--app-muted);
+  color: var(--app-text-muted);
 
   mat-icon {
     font-size: 48px;
@@ -240,7 +362,33 @@ mat-panel-description {
     font-size: 22px;
   }
 
-  .cromos-grid {
+.filtro-fila {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 2px;
+  font-size: 14px;
+
+  .filtro-info {
+    color: var(--app-text-muted);
+    font-size: 13px;
+  }
+}
+
+.filtro-vacio {
+  padding: 20px 12px;
+  color: var(--app-text-muted);
+  font-size: 14px;
+  text-align: center;
+  border: 1px dashed var(--app-border);
+  border-radius: 12px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.cromos-grid {
     grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
     gap: 8px;
   }

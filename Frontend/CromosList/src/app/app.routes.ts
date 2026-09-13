@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Layout } from './layout/layout';
+import { HomeRedirectComponent } from './layout/home-redirect';
 import { LoginComponent } from './pages/login/login';
 import { RegistroComponent } from './pages/registro/registro';
 import { AnadirCromoComponent } from './pages/cromos/cromos';
@@ -9,6 +10,7 @@ import { TiposCromoComponent } from './pages/tipos-cromo/tipos-cromo';
 import { AlbumesComponent } from './pages/albumes/albumes';
 import { EditorialesComponent } from './pages/editoriales/editoriales';
 import { ColeccionDetalleComponent } from './pages/coleccion-detalle/coleccion-detalle';
+import { MisColeccionesComponent } from './pages/mis-colecciones/mis-colecciones';
 import { AdminPanelComponent } from './pages/admin-panel/admin-panel';
 import { EnProgresoComponent } from './pages/en-progreso/en-progreso';
 import { authGuard } from './guards/auth.guard';
@@ -34,8 +36,12 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'panel',
+        component: HomeRedirectComponent,
         pathMatch: 'full'
+      },
+      {
+        path: 'colecciones',
+        component: MisColeccionesComponent
       },
       {
         path: 'panel',
@@ -74,8 +80,7 @@ export const routes: Routes = [
       },
       {
         path: 'album/:id',
-        component: ColeccionDetalleComponent,
-        canActivate: [esAdminGuard]
+        component: ColeccionDetalleComponent
       }
     ]
   },

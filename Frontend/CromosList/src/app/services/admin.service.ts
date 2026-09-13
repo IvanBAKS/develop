@@ -34,6 +34,13 @@ export interface CromoBusqueda {
   tipoCromo?: { id: number; nombre: string } | null;
 }
 
+export interface UsuarioPanel {
+  id: number;
+  nombre: string;
+  email: string;
+  esAdmin: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -81,7 +88,18 @@ export class AdminService {
     });
   }
 
-  promoverAdmin(id: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/Usuarios/${id}/admin`, {});
+  promoverAdmin(id: number, revocar = false): Observable<void> {
+    const url = revocar
+      ? `${this.apiUrl}/Usuarios/${id}/admin/revocar`
+      : `${this.apiUrl}/Usuarios/${id}/admin`;
+    return this.http.put<void>(url, {});
+  }
+
+  listarUsuarios(): Observable<UsuarioPanel[]> {
+    return this.http.get<UsuarioPanel[]>(`${this.apiUrl}/Usuarios`);
+  }
+
+  revocarAdmin(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/Usuarios/${id}/admin/revocar`, {});
   }
 }

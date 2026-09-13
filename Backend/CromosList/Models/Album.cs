@@ -14,4 +14,6 @@ public class Album
     public ICollection<AlbumEquipo> AlbumEquipos { get; set; } = new List<AlbumEquipo>();
     public ICollection<AlbumTipoCromo> AlbumTiposCromo { get; set; } = new List<AlbumTipoCromo>();
     public ICollection<Cromo> Cromos { get; set; } = new List<Cromo>();
+
+    public ICollection<UsuarioAlbum> UsuariosAlbum { get; set; } = new List<UsuarioAlbum>();
 }

@@ -12,6 +12,7 @@ public class CromosListDbContext : DbContext
 
     public DbSet<Usuario> Usuarios => Set<Usuario>();
     public DbSet<UsuarioCromo> UsuariosCromo => Set<UsuarioCromo>();
+    public DbSet<UsuarioAlbum> UsuariosAlbumes => Set<UsuarioAlbum>();
     public DbSet<Cromo> Cromos => Set<Cromo>();
     public DbSet<Jugador> Jugadores => Set<Jugador>();
     public DbSet<Equipo> Equipos => Set<Equipo>();
@@ -348,6 +349,31 @@ public class CromosListDbContext : DbContext
             entity.HasOne(x => x.Cromo)
                 .WithMany(x => x.UsuariosCromo)
                 .HasForeignKey(x => x.CromoId);
+        });
+
+        // USUARIO_ALBUM
+        modelBuilder.Entity<UsuarioAlbum>(entity =>
+        {
+            entity.ToTable("usuario_album");
+
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.Id)
+                .HasColumnName("id");
+
+            entity.Property(x => x.UsuarioId)
+                .HasColumnName("usuario_id");
+
+            entity.Property(x => x.AlbumId)
+                .HasColumnName("album_id");
+
+            entity.HasOne(x => x.Usuario)
+                .WithMany(x => x.Albumes)
+                .HasForeignKey(x => x.UsuarioId);
+
+            entity.HasOne(x => x.Album)
+                .WithMany(x => x.UsuariosAlbum)
+                .HasForeignKey(x => x.AlbumId);
         });
     }
 }

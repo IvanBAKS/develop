@@ -47,6 +47,8 @@ export class CromoEditarComponent implements OnInit {
   filteredTiposCromo$!: Observable<any[]>;
 
   cargando = false;
+  borrando = false;
+  confirmarBorrado = false;
   error = '';
 
   private apiUrl = '/api';
@@ -251,5 +253,28 @@ export class CromoEditarComponent implements OnInit {
 
   cancelar(): void {
     this.dialogRef.close(false);
+  }
+
+  eliminar(): void {
+    if (!this.confirmarBorrado) {
+      this.confirmarBorrado = true;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.borrando = true;
+    this.error = '';
+
+    this.http.delete<void>(`${this.apiUrl}/Cromo/${this.data.cromo.id}`).subscribe({
+      next: () => {
+        this.borrando = false;
+        this.dialogRef.close(true);
+      },
+      error: () => {
+        this.borrando = false;
+        this.error = 'No se ha podido eliminar el cromo.';
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

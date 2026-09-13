@@ -1,0 +1,119 @@
+<div class="page-container">
+
+  <header class="page-header">
+    <div>
+      <h1>Mis colecciones</h1>
+      <p class="subtitle">
+        Apúntate a una colección para saber qué cromos tienes y cuáles te faltan.
+      </p>
+    </div>
+  </header>
+
+  <div class="cargando" *ngIf="cargando">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando colecciones...</p>
+  </div>
+
+  <div class="error" *ngIf="error && !cargando">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <mat-card class="empty-banner" *ngIf="!cargando && !error && colecciones.length > 0 && !tieneSuscripciones">
+    <mat-card-content>
+      <mat-icon>collections_bookmark</mat-icon>
+      <div>
+        <h2>Elige una colección para empezar</h2>
+        <p>Aún no estás apuntado a ninguna colección. Las que hay disponibles son estas: apúntate a una para llevar el control de qué cromos tienes y cuáles te faltan.</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="colecciones-grid" *ngIf="!cargando && colecciones.length > 0">
+
+    <mat-card
+      class="coleccion-card"
+      *ngFor="let item of colecciones; trackBy: trackAlbum"
+      [class.completada]="item.completado">
+
+      <mat-card-content>
+
+        <div class="card-top">
+          <span class="coleccion-temporada">{{ item.temporada }}</span>
+          <mat-icon class="completada-icon" *ngIf="item.completado">check_circle</mat-icon>
+        </div>
+
+        <h2 class="coleccion-nombre">{{ item.nombre }}</h2>
+        <p class="coleccion-editorial">{{ item.editorial.nombre }}</p>
+
+        <div *ngIf="item.suscrito" class="progreso">
+          <div class="progreso-fila">
+            <span class="progreso-valor">{{ item.tenidos }} / {{ item.totalCromos }}</span>
+            <span class="progreso-pct">{{ progreso(item) }}%</span>
+          </div>
+          <mat-progress-bar
+            mode="determinate"
+            [value]="progreso(item)">
+          </mat-progress-bar>
+          <p class="progreso-faltan" *ngIf="!item.completado">
+            Te faltan {{ item.faltan }} cromo{{ item.faltan !== 1 ? 's' : '' }}
+          </p>
+          <p class="progreso-completo" *ngIf="item.completado">
+            ¡Colección completada!
+          </p>
+        </div>
+
+        <p class="coleccion-cromos" *ngIf="!item.suscrito">
+          {{ item.totalCromos }} cromo{{ item.totalCromos !== 1 ? 's' : '' }}
+          {{ item.totalCromos > 0 ? 'en la colección' : '' }}
+        </p>
+
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+
+        <a
+          mat-stroked-button
+          color="primary"
+          [routerLink]="['/album', item.albumId]">
+
+          <mat-icon>visibility</mat-icon>
+          Ver
+
+        </a>
+
+        <button
+          mat-flat-button
+          *ngIf="!item.suscrito"
+          color="primary"
+          [disabled]="cambiando"
+          (click)="apuntarse(item)">
+
+          <mat-icon>add</mat-icon>
+          Apuntarse
+
+        </button>
+
+        <button
+          mat-stroked-button
+          *ngIf="item.suscrito"
+          [disabled]="cambiando"
+          (click)="desapuntarse(item)">
+
+          <mat-icon>person_remove</mat-icon>
+          Desapuntarse
+
+        </button>
+
+      </mat-card-actions>
+
+    </mat-card>
+
+  </div>
+
+  <div class="vacio" *ngIf="!cargando && !error && colecciones.length === 0">
+    <mat-icon>collections_bookmark</mat-icon>
+    <p>No hay colecciones disponibles todavía.</p>
+  </div>
+
+</div>

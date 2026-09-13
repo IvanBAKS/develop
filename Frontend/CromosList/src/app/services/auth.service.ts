@@ -44,6 +44,26 @@ export class AuthService {
     return sessionStorage.getItem('auth_token');
   }
 
+  getMiId(): number | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+    const parte = token.split('.')[1];
+    if (!parte) {
+      return null;
+    }
+    try {
+      const json = JSON.parse(decodeURIComponent(
+        atob(parte.replace(/-/g, '+').replace(/_/g, '/'))
+      )) as Record<string, unknown>;
+      const id = json['sub'] ?? json['nameid'] ?? json['Id'];
+      return typeof id === 'number' ? id : (id ? Number(id) : null);
+    } catch {
+      return null;
+    }
+  }
+
   private storeSession(res: AuthResponse): void {
     sessionStorage.setItem('auth_token', res.token);
     sessionStorage.setItem('auth_user', JSON.stringify({ nombre: res.nombre, email: res.email, esAdmin: res.esAdmin }));

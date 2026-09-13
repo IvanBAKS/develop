@@ -309,4 +309,23 @@ public class CromoController : ControllerBase
 
         return Ok(cromo);
     }
+
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> Eliminar(long id)
+    {
+        var cromo = await _context.Cromos
+            .Include(c => c.UsuariosCromo)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (cromo is null)
+            return NotFound();
+
+        _context.UsuariosCromo.RemoveRange(cromo.UsuariosCromo);
+
+        _context.Cromos.Remove(cromo);
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

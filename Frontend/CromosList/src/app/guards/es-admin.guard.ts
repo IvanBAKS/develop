@@ -10,5 +10,5 @@ export const esAdminGuard: CanActivateFn = () => {
     return true;
   }
 
-  return router.createUrlTree(['/en-progreso']);
+  return router.createUrlTree(['/colecciones']);
 };

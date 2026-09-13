@@ -13,4 +13,6 @@ public class Usuario
     public bool EsAdmin { get; set; }
 
     public ICollection<UsuarioCromo> Cromos { get; set; } = new List<UsuarioCromo>();
+
+    public ICollection<UsuarioAlbum> Albumes { get; set; } = new List<UsuarioAlbum>();
 }

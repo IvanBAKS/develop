@@ -8,16 +8,16 @@
   <div class="error" *ngIf="error && !cargando">
     <mat-icon>error_outline</mat-icon>
     <p>{{ error }}</p>
-    <a mat-stroked-button color="primary" routerLink="/albumes">
+    <a mat-stroked-button color="primary" routerLink="/colecciones">
       <mat-icon>arrow_back</mat-icon>
-      Volver a álbumes
+      Volver a mis colecciones
     </a>
   </div>
 
   <div class="detalle" *ngIf="album && !cargando">
 
     <header class="detalle-header">
-      <a mat-icon-button routerLink="/albumes" class="back-btn">
+      <a mat-icon-button routerLink="/colecciones" class="back-btn">
         <mat-icon>arrow_back</mat-icon>
       </a>
       <div>
@@ -25,6 +25,38 @@
         <p class="subtitle">{{ album.temporada }} · {{ album.equipos.length }} equipo{{ album.equipos.length !== 1 ? 's' : '' }}</p>
       </div>
     </header>
+
+    <div class="progreso-banner" *ngIf="progreso && suscrito">
+      <div class="progreso-fila">
+        <span>Llevas <strong>{{ progreso.tenidos }}</strong> de {{ progreso.totalCromos }} cromos</span>
+        <span class="progreso-pct">{{ progresoPct() }}%</span>
+      </div>
+      <mat-progress-bar mode="determinate" [value]="progresoPct()"></mat-progress-bar>
+      <p class="progreso-faltan" *ngIf="progreso.faltan > 0">
+        Te faltan {{ progreso.faltan }} cromo{{ progreso.faltan !== 1 ? 's' : '' }}.
+        Pulsa sobre un cromo para marcarlo como conseguido.
+      </p>
+      <p class="progreso-completo" *ngIf="progreso.faltan === 0">
+        ¡Has completado esta colección!
+      </p>
+    </div>
+
+    <div class="no-suscrito-banner" *ngIf="progreso && !suscrito">
+      <p>Apúntate a esta colección para marcar qué cromos tienes y cuáles te faltan.</p>
+      <button mat-flat-button color="primary" [disabled]="marcando" (click)="apuntarse()">
+        <mat-icon>add</mat-icon>
+        Apuntarme
+      </button>
+    </div>
+
+    <div class="filtro-fila" *ngIf="progreso && suscrito">
+      <mat-checkbox
+        [checked]="soloFaltan"
+        (change)="cambiarFiltro($event.checked)">
+        Mostrar solo los que me faltan
+      </mat-checkbox>
+      <span class="filtro-info" *ngIf="soloFaltan">Te faltan {{ progreso.faltan }} cromo{{ progreso.faltan !== 1 ? 's' : '' }}</span>
+    </div>
 
     <mat-accordion multi>
 
@@ -40,18 +72,43 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div class="cromos-grid" *ngIf="cromosDeEquipo(equipo).length > 0">
-          <mat-card class="cromo-card" *ngFor="let cromo of cromosDeEquipo(equipo)">
+        <div class="cromos-grid" *ngIf="cromosVisibles(equipo).length > 0">
+          <mat-card
+            class="cromo-card"
+            [class.tengo]="loTiene(cromo)"
+            [class.falta]="!loTiene(cromo)"
+            [class.tenible]="puedeMarcar()"
+            *ngFor="let cromo of cromosVisibles(equipo)"
+            (click)="puedeMarcar() && alternarCromo(cromo)">
+
             <mat-card-content>
               <span class="cromo-numero">{{ cromo.numero }}</span>
               <p class="cromo-jugador">{{ cromo.jugador.nombre }}</p>
               <p class="cromo-tipo">{{ cromo.tipoCromo.nombre }}</p>
               <p class="cromo-edicion" *ngIf="mostrarEdicion(cromo)">{{ cromo.edicion.nombre }}</p>
             </mat-card-content>
-            <button mat-icon-button class="cromo-editar-btn" (click)="editarCromo(cromo)" aria-label="Editar cromo">
+            <button
+              mat-icon-button
+              class="cromo-editar-btn"
+              *ngIf="esAdmin"
+              (click)="$event.stopPropagation(); editarCromo(cromo)"
+              aria-label="Editar cromo">
               <mat-icon>edit</mat-icon>
             </button>
+            <button
+              class="cromo-tengo-btn"
+              [class.tengo]="loTiene(cromo)"
+              [disabled]="marcando"
+              *ngIf="suscrito"
+              (click)="$event.stopPropagation(); alternarCromo(cromo)">
+              <mat-icon>{{ loTiene(cromo) ? 'close' : 'check' }}</mat-icon>
+              {{ loTiene(cromo) ? 'Quitar' : 'Lo tengo' }}
+            </button>
           </mat-card>
+        </div>
+
+        <div class="cromos-grid filtro-vacio" *ngIf="soloFaltan && cromosDeEquipo(equipo).length > 0 && cromosVisibles(equipo).length === 0">
+          <p>No te falta ningún cromo de este equipo.</p>
         </div>
 
         <div class="cromos-grid" *ngIf="cromosDeEquipo(equipo).length === 0">
@@ -75,9 +132,13 @@
 
     <ng-container *ngIf="especiales.length > 0">
 
+      <div class="filtro-vacio" *ngIf="soloFaltan && especialesVisibles.length === 0">
+        <p>No te falta ningún cromo especial.</p>
+      </div>
+
       <mat-accordion multi class="especiales-accordion">
 
-        <mat-expansion-panel class="especiales-panel" *ngFor="let grupo of especiales; trackBy: trackTipo">
+        <mat-expansion-panel class="especiales-panel" *ngFor="let grupo of especialesVisibles; trackBy: trackTipo">
 
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -90,15 +151,36 @@
           </mat-expansion-panel-header>
 
           <div class="cromos-grid">
-            <mat-card class="cromo-card" *ngFor="let cromo of grupo.cromos">
+            <mat-card
+              class="cromo-card"
+              [class.tengo]="loTiene(cromo)"
+              [class.falta]="!loTiene(cromo)"
+              [class.tenible]="puedeMarcar()"
+              *ngFor="let cromo of grupo.cromos"
+              (click)="puedeMarcar() && alternarCromo(cromo)">
+
             <mat-card-content>
               <span class="cromo-numero">{{ cromo.numero }}</span>
               <p class="cromo-jugador">{{ cromo.jugador.nombre }}</p>
               <p class="cromo-equipo">{{ cromo.equipo.nombre }}</p>
               <p class="cromo-edicion" *ngIf="mostrarEdicion(cromo)">{{ cromo.edicion.nombre }}</p>
-            </mat-card-content>
-            <button mat-icon-button class="cromo-editar-btn" (click)="editarCromo(cromo)" aria-label="Editar cromo">
+            </mat-card-content>            
+            <button
+              mat-icon-button
+              class="cromo-editar-btn"
+              *ngIf="esAdmin"
+              (click)="$event.stopPropagation(); editarCromo(cromo)"
+              aria-label="Editar cromo">
               <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              class="cromo-tengo-btn"
+              [class.tengo]="loTiene(cromo)"
+              [disabled]="marcando"
+              *ngIf="suscrito"
+              (click)="$event.stopPropagation(); alternarCromo(cromo)">
+              <mat-icon>{{ loTiene(cromo) ? 'close' : 'check' }}</mat-icon>
+              {{ loTiene(cromo) ? 'Quitar' : 'Lo tengo' }}
             </button>
           </mat-card>
           </div>

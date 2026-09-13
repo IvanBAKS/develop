@@ -89,6 +89,19 @@ public class AlbumesController : ControllerBase
             })
             .ToListAsync();
 
+        var tiposCromo = await _context.AlbumTiposCromo
+            .AsNoTracking()
+            .Include(at => at.TipoCromo)
+            .Where(at => at.AlbumId == id)
+            .OrderBy(at => at.Orden)
+            .Select(at => new
+            {
+                at.TipoCromo.Id,
+                at.TipoCromo.Nombre,
+                at.Orden
+            })
+            .ToListAsync();
+
         var resultado = equipos.Select(e => new
         {
             e.Id,
@@ -104,7 +117,8 @@ public class AlbumesController : ControllerBase
             titulo.Id,
             titulo.Nombre,
             titulo.Temporada,
-            Equipos = resultado
+            Equipos = resultado,
+            TiposCromo = tiposCromo
         });
     }
 

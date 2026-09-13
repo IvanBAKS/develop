@@ -134,6 +134,55 @@
 
   </section>
 
+  <section class="gestion-seccion" *ngIf="resumen">
+
+    <header class="gestion-header">
+      <div>
+        <h2>Gestión de administradores</h2>
+        <p>Promueve o revoca el rol de administrador a un usuario.</p>
+      </div>
+    </header>
+
+    <div class="gestion-cargando" *ngIf="cargandoUsuarios">
+      <mat-spinner diameter="28"></mat-spinner>
+    </div>
+
+    <div class="gestion-vacio" *ngIf="!cargandoUsuarios && usuarios.length === 0">
+      <mat-icon>group</mat-icon>
+      <p>No hay usuarios para gestionar.</p>
+    </div>
+
+    <mat-card class="user-card" *ngFor="let usuario of usuarios">
+      <mat-card-content class="user-row">
+        <div class="user-info">
+          <p class="user-nombre">{{ usuario.nombre }}</p>
+          <p class="user-email">{{ usuario.email }}</p>
+        </div>
+        <div class="user-actions">
+          <span class="user-rol" [class.admin]="usuario.esAdmin">
+            {{ usuario.esAdmin ? 'Admin' : 'Usuario' }}
+          </span>
+          <button
+            mat-stroked-button
+            color="primary"
+            *ngIf="!usuario.esAdmin"
+            (click)="promover(usuario.id)">
+            <mat-icon>admin_panel_settings</mat-icon>
+            Hacer admin
+          </button>
+          <button
+            mat-stroked-button
+            *ngIf="usuario.esAdmin && !esYo(usuario.id)"
+            (click)="revocar(usuario.id)">
+            <mat-icon>person_remove</mat-icon>
+            Quitar admin
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </section>
+
   <div class="cargando" *ngIf="cargando && !resumen">
     <mat-spinner diameter="40"></mat-spinner>
     <p>Cargando datos del panel...</p>

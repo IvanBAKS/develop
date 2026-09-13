@@ -117,4 +117,19 @@ public class UsuariosCromosController : ControllerBase
 
         return Ok(usuarioCromo);
     }
+
+    [HttpDelete("{usuarioId:long}/{cromoId:long}")]
+    public async Task<IActionResult> QuitarCromo(long usuarioId, long cromoId)
+    {
+        var usuarioCromo = await _context.UsuariosCromo
+            .FirstOrDefaultAsync(uc => uc.UsuarioId == usuarioId && uc.CromoId == cromoId);
+
+        if (usuarioCromo is null)
+            return NotFound("El usuario no tiene este cromo.");
+
+        _context.UsuariosCromo.Remove(usuarioCromo);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

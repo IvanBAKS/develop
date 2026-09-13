@@ -48,11 +48,18 @@ export interface AlbumEquipoConCromos {
   cromos: AlbumCromo[];
 }
 
+export interface AlbumTipoCromoConOrden {
+  id: number;
+  nombre: string;
+  orden: number;
+}
+
 export interface AlbumDetalle {
   id: number;
   nombre: string;
   temporada: string;
   equipos: AlbumEquipoConCromos[];
+  tiposCromo: AlbumTipoCromoConOrden[];
 }
 
 @Injectable({
